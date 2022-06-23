@@ -1,31 +1,68 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:remote_config_sample/src/service/remote_config_service.dart';
+import 'package:remote_config_sample/src/widgets/maintenance_mode_dialog.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MaterialApp(
+      home: FutureBuilder<RemoteConfigService>(
+        future: RemoteConfigService.build(),
+        builder:
+            (BuildContext context, AsyncSnapshot<RemoteConfigService> snapshot) {
+          return snapshot.hasData
+              ? MyApp(remoteConfigService: snapshot.requireData)
+              : Container();
+        },
+      )));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  const MyApp({required this.remoteConfigService, Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  final RemoteConfigService remoteConfigService;
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        runZonedGuarded<Future<void>>(() async {
+          if (await widget.remoteConfigService.isMaintenanceMode()) {
+            MaintenanceModeDialog.showMaintenanceModeDialog(context);
+          }
+        }, (error, stack) => print("catches error."));
+        break;
+      default:
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+    runZonedGuarded<Future<void>>(() async {
+      if (await widget.remoteConfigService.isMaintenanceMode()) {
+        MaintenanceModeDialog.showMaintenanceModeDialog(context);
+      }
+    }, (error, stack) => print("catches error."));
+
+    return const MyHomePage(title: 'Flutter Demo Home Page');
   }
 }
 
