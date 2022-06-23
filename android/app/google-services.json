@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "842583943917",
+    "project_id": "remote-config-sample-3d7f9",
+    "storage_bucket": "remote-config-sample-3d7f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842583943917:android:c22a4105b9e091dc8ffae4",
+        "android_client_info": {
+          "package_name": "jp.sacredsanctuary.remote_config_sample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842583943917-fh7b93jc7c2phktqo42ra6jq45jtcs05.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "***************************************"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842583943917-fh7b93jc7c2phktqo42ra6jq45jtcs05.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
